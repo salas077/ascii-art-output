@@ -74,6 +74,12 @@ terminal shows them in color.
 When you use --output, it saves the result to a file instead of showing 
 it on screen. The file will contain the same output including color codes.
 
+**Colored output in files:** If you used --color, the saved file contains 
+ANSI escape codes. In a text editor it may look like raw codes (e.g. ESC [34m). 
+To see the colored ASCII art as intended, open the file in a terminal with:
+  cat result.txt
+(or whatever filename you used with --output=).
+
 ERRORS
 
 If you mess up the format, it shows you how to use it correctly.

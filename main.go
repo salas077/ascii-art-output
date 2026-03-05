@@ -22,7 +22,7 @@ func main() {
 		// This is the EXACT usage message required by the audit
 		fmt.Println("Usage: go run . [OPTION] [STRING] [BANNER]")
 		fmt.Println()
-		fmt.Println("EX: go run . --output=<fileName.txt> something standard")
+		fmt.Println("Example: go run . --output=<fileName.txt> something standard")
 		return // Exit the program
 	}
 
