@@ -3,6 +3,12 @@ ASCII Art Generator with Output Support
 This program converts text into ASCII art with optional color support and file output.
 Made for Zone01 Athens by Giorgos Salaounis and Christos Paloglou.
 
+USAGE (error/help)
+
+Usage: go run . [OPTION] [STRING] [BANNER]
+
+Example: go run . --output=<fileName.txt> something standard
+
 HOW TO USE
 
 Basic:
