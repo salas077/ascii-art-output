@@ -19,7 +19,8 @@ func main() {
 	// If there was an error (wrong format, missing args, etc.)
 	// we show the usage message and exit
 	if err != nil {
-		// This is the EXACT usage message required by the audit
+		// Error reason on stderr; usage on stdout unchanged (audit-friendly)
+		fmt.Fprintf(os.Stderr, "Error: %v\n\n", err)
 		fmt.Println("Usage: go run . [OPTION] [STRING] [BANNER]")
 		fmt.Println()
 		fmt.Println("Example: go run . --output=<fileName.txt> something standard")
@@ -82,14 +83,10 @@ func main() {
 			return // Exit the program
 		}
 
-		// Step 6c: Check if substring is empty
-		// If user provided an empty substring, we show a warning and render normally
-		if opts.Substring == "" && len(os.Args) > 3 {
-			// User explicitly gave an empty substring like: --color=red "" "text"
-			// This is probably a mistake, so we warn them
+		// Step 6c: Only --color=red "" "text" (explicit empty substring), not --color=red "Hello"
+		if opts.SubstringArgProvided && opts.Substring == "" {
 			fmt.Println("Warning: Empty substring provided. Rendering without color.")
 			fmt.Println()
-			// Render normally without color
 			output := RenderInput(opts.Text, banner)
 			if opts.OutputFile != "" {
 				// Write to file

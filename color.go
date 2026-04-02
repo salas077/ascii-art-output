@@ -62,12 +62,15 @@ func ContainsIndex(indexes []int, target int) bool {
 
 // ColorOptions holds parsed arguments
 type ColorOptions struct {
-	UseColor   bool
-	Color      string
-	Substring  string
-	Text       string
-	Banner     string
-	OutputFile string
+	UseColor  bool
+	Color     string
+	Substring string
+	// SubstringArgProvided: user passed [substring, text] or [substring, text, banner].
+	// If false and Substring is "", substring was omitted → color whole text (spec).
+	SubstringArgProvided bool
+	Text                 string
+	Banner               string
+	OutputFile           string
 }
 
 // ParseColorArgs parses command line arguments
@@ -80,7 +83,7 @@ func ParseColorArgs(args []string) (ColorOptions, error) {
 
 	// args[0] is program name
 	if len(args) < 2 {
-		return opts, fmt.Errorf("missing arguments")
+		return opts, fmt.Errorf("need at least one argument (text to render)")
 	}
 
 	// Start from index 1
@@ -100,14 +103,14 @@ func ParseColorArgs(args []string) (ColorOptions, error) {
 				return opts, fmt.Errorf("empty output file")
 			}
 		} else {
-			return opts, fmt.Errorf("unknown flag")
+			return opts, fmt.Errorf("unknown flag %q (expected --color=<name> or --output=<file>)", args[i])
 		}
 		i++
 	}
 
 	// Need at least text after flags
 	if i >= len(args) {
-		return opts, fmt.Errorf("missing text")
+		return opts, fmt.Errorf("missing text after options")
 	}
 
 	// Now we have remaining arguments
@@ -126,23 +129,25 @@ func ParseColorArgs(args []string) (ColorOptions, error) {
 			opts.Banner = remaining[1]
 		} else if opts.UseColor {
 			// [substring, text] - only valid with color flag
+			opts.SubstringArgProvided = true
 			opts.Substring = remaining[0]
 			opts.Text = remaining[1]
 		} else {
-			return opts, fmt.Errorf("invalid arguments")
+			return opts, fmt.Errorf("invalid arguments: %q is not a banner (standard/shadow/thinkertoy); use --color for [substring] [text]", remaining[1])
 		}
 
 	case 3:
 		// [substring, text, banner] - only valid with color flag
 		if !opts.UseColor {
-			return opts, fmt.Errorf("too many arguments")
+			return opts, fmt.Errorf("too many arguments (%d) without --color (max 2: text and banner)", len(remaining))
 		}
+		opts.SubstringArgProvided = true
 		opts.Substring = remaining[0]
 		opts.Text = remaining[1]
 		opts.Banner = remaining[2]
 
 	default:
-		return opts, fmt.Errorf("invalid number of arguments")
+		return opts, fmt.Errorf("too many arguments: got %d after flags (allowed: 1, 2, or 3)", len(remaining))
 	}
 
 	return opts, nil
