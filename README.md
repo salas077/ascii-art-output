@@ -88,7 +88,8 @@ To see the colored ASCII art as intended, open the file in a terminal with:
 
 ERRORS
 
-If you mess up the format, it shows you how to use it correctly.
+If you mess up the format, a short reason is printed to **stderr**, then the
+usage message is printed to **stdout** (same lines as in USAGE above).
 If you pick a color that doesn't exist, it lists the real colors.
 If the banner file is missing, it tells you.
 If the output file path is invalid, it shows an error.
@@ -107,3 +108,4 @@ render.go - draws the ASCII art
 color.go - handles colors and argument parsing
 main_test.go - tests the basic stuff
 color_test.go - tests the color stuff
+output_test.go - tests --output flag and file writing
